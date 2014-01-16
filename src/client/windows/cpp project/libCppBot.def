@@ -1,0 +1,4 @@
+; dlltool --base-file C:\DOCUME~1\PRABHA~1\LOCALS~1\Temp/cca01544.base --output-exp CppBot.exp --dllname CppBot.dll --output-def libCppBot.def --no-export-all-symbols --add-stdcall-alias --exclude-symbol=DllMainCRTStartup@12 --def C:\DOCUME~1\PRABHA~1\LOCALS~1\Temp/cca01544.def --output-lib libCppBot.a
+EXPORTS
+	Java_CBot_cgame@12 @ 1
+	Java_CBot_cgame = Java_CBot_cgame@12 @ 2
