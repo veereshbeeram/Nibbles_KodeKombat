@@ -1,0 +1,61 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package kodekombatserv;
+
+/**
+ *
+ * @author Saish Kamat
+ */
+public class KKSnake {
+
+    int id;
+    Location head;
+    boolean map[][];
+    int errorStat;
+    String errorMessage;
+
+    public KKSnake(int id, int width, int height) {
+        map = new boolean[height][width];
+        System.out.println(map[0][0]);
+        this.id = id;
+        head=new Location(-1,-1);
+        errorStat=0;
+        errorMessage="";
+    }
+
+    public void ReportError(int err,String mess)
+    {
+        this.errorStat=err;
+        this.errorMessage=mess;
+    }
+
+    public boolean moveLeft() {
+        if(head.i==-1||head.j==-1)
+            return false;
+        
+        return true;
+    }
+}
+
+class Location {
+    public int i,j;
+
+    public Location(){
+        i=-1;j=-1;
+    }
+
+    public Location(int i,int j){
+        this.i=i;
+        this.j=j;
+    }
+
+    public int geti(){
+        return i;
+    }
+
+    public int getj(){
+        return j;
+    }
+}

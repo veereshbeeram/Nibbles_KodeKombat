@@ -1,0 +1,185 @@
+/*
+ * Error Coding for Bots
+ * -1 : Unknown Error Message
+ * -2 : Connection termination
+ * -3 : IOException thrown while communicating
+ *
+ *
+ */
+package kodekombatserv;
+
+import java.awt.Dimension;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+
+/**
+ *
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ *
+ * @author Saish Kamat
+ */
+public class KKBotManager implements KKBotManagerCallback {
+
+    ArrayList<KKSnake> list;
+    int currid;
+    Dimension size;
+
+    // TODO _SAISH Snakes sockets needs to be integrated with KKSnake
+    ArrayList snakesSocket;
+
+    public KKBotManager(int width, int height) {
+        currid = 0;
+        size = new Dimension(width, height);
+        list = new ArrayList<KKSnake>();
+        snakesSocket=new ArrayList();
+    }
+
+
+    public int KKAddSnake(KKSendClientInterface client) {
+        try {            
+            KKSnake tsnake = new KKSnake(currid++, size.width, size.height);
+
+            list.add(tsnake);
+            this.snakesSocket.add((client));
+        } catch (Exception ex) {
+            //Random Error Message
+            return -1;
+        }
+        //Update UI
+
+        return currid;
+    }
+
+    public int KKRemSnake(int id) {
+        try {
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).id == id) {
+                    list.remove(i);
+
+                    // TODO: _SAISH modify this after socket integration
+                    this.snakesSocket.remove(i);
+                }
+            }
+        } catch (Exception ex) {
+            //Random Error Message;
+            return -1;
+        }
+
+        //Update UI
+        return 0;
+    }
+
+    public int KKMoveLeft(int id) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public int KKMoveRight(int id) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public int KKMoveUp(int id) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public int KKMoveDown(int id) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public int KKErrorCallback(int id, int errid) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public int KKControlMessage(int id, Object data) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+}
+
+interface KKBotManagerCallback {
+
+    public int KKControlMessage(int id, Object data);
+
+    int KKAddSnake(KKSendClientInterface client);
+
+    int KKRemSnake(int id);
+
+    int KKErrorCallback(int id, int errid);
+
+    int KKMoveLeft(int id);
+
+    int KKMoveRight(int id);
+
+    int KKMoveUp(int id);
+
+    int KKMoveDown(int id);
+}
+
+class KKLowLevelServer extends Thread {
+
+    KKBotManagerCallback botmanager;    
+
+    public KKLowLevelServer(KKBotManagerCallback botmanager) {
+        this.botmanager = botmanager;
+    }
+
+    @Override
+    public void run() {        
+        
+        try {
+            ServerSocket serv = new ServerSocket(20000);
+
+            while (true) {
+                Socket client = serv.accept();
+
+                Thread botproc = new KKLowLevelBotProcessor(client, this.botmanager);
+                botproc.start();
+            }
+        } catch (IOException ex) {
+//            Logger.getLogger(KKLowLevelServer.class.getName()).log(Level.SEVERE, null, ex);
+            botmanager.KKControlMessage(-100, "KKLowLevelServer has crashed. No new connections can be made.");
+        }
+    }
+}
+
+//Interface for KKBotManager to send requests to the clientapi
+
+interface KKSendClientInterface
+{
+    public void sendMessage();
+}
+
+class KKLowLevelBotProcessor extends Thread implements KKSendClientInterface {
+
+    KKBotManagerCallback botmanager;
+    Socket client;
+    int id;
+
+    public KKLowLevelBotProcessor(Socket client, KKBotManagerCallback botmanager) {
+        this.botmanager = botmanager;
+        this.client=client;        
+    }
+
+    @Override
+    public void run() {
+        //Add new snake
+        this.id=this.botmanager.KKAddSnake(this);
+        //New snake has been added to the game
+
+        while(true)
+        {
+
+        }
+        //run your protocol checks
+
+        //incase crash happens notify Botmanager
+    }
+
+    public void sendMessage() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+}

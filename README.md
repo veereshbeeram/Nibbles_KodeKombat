@@ -1,3 +1,5 @@
 Nibbles_KodeKombat
 ==================
-A pocket tank type multiplayer AI war engine.
+Nibbles is a Snake game, controlled by AI bots.
+
+This code is an execution engine & framework that allow Players to write AI bots & compete against one another.
